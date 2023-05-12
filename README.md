@@ -44,7 +44,11 @@ docker compose up -d
 ```bash
 docker compose exec nestjs bash
 ```
-5. Install Node.js dependencies:
+5. Create .env file
+```bash
+cp .env.example .env
+```
+6. Install Node.js dependencies:
 ```bash
 npm i
 ```
