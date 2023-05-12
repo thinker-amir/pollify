@@ -1,0 +1,10 @@
+FROM node:lts-slim
+
+LABEL maintainer="Amir Fakour"
+
+WORKDIR /usr/src/nestjs
+
+RUN apt-get update -y && \
+    apt-get install -y git curl wget
+
+RUN npm install -g @nestjs/cli
