@@ -48,7 +48,11 @@ docker compose exec nestjs bash
 ```bash
 cp .env.example .env
 ```
-6. Install Node.js dependencies:
+6. Set up your environment in .env file
+```bash
+JWT_SECRET="PUT A COMPLEX STRING"
+```
+7. Install Node.js dependencies:
 ```bash
 npm i
 ```

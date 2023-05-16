@@ -11,6 +11,15 @@ services:
       POSTGRES_PASSWORD: "dev-secret"
     restart: always
 
+  test-postgres:
+    image: postgres
+    container_name: test-postgres
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: "test-secret"
+    restart: always
+
   nestjs:
     build:
       context: ./
