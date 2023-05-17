@@ -42,7 +42,7 @@ describe('JwtStrategy', () => {
   });
 
   describe('validate', () => {
-    it('should return user id and username if user is found', async () => {
+    it('should return the user object if it is exists', async () => {
       const mockUser = { id: 1, username: 'testuser' };
       const mockPayload = { username: mockUser.username };
 
@@ -51,7 +51,7 @@ describe('JwtStrategy', () => {
       const result = await jwtStrategy.validate(mockPayload);
 
       expect(usersService.findOne).toHaveBeenCalledWith(mockPayload);
-      expect(result).toEqual({ userId: mockUser.id, username: mockUser.username });
+      expect(result).toEqual(mockUser);
     });
 
     it('should throw UnauthorizedException if findOne throws an error', async () => {

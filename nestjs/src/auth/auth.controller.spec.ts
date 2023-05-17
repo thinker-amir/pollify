@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { User } from 'src/users/entities/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
@@ -62,13 +61,10 @@ describe('AuthController', () => {
   });
 
   describe('profile', () => {
-    it('should return the user profile', async () => {
-      const user = { id: 1, ...mockUser }
-      jest.spyOn(authService, 'profile').mockResolvedValue(user as User);
-
-      const result = await controller.profile({ user });
-
-      expect(result).toEqual(user);
+    it('should return the current user', () => {
+      const user = { id: 1, name: 'John Doe', email: 'john@example.com' };
+      const result = controller.profile(user);
+      expect(result).toBe(user);
     });
   });
 

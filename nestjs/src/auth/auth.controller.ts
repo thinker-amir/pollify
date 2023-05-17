@@ -1,5 +1,7 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiBody, ApiConflictResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { User } from 'src/users/entities/user.entity';
+import { CurrentUser } from '../common/decorator/curent-user.decorator';
 import { AuthService } from './auth.service';
 import { Public } from './decorator/public.decorator';
 import { SigninDto } from './dto/signin.dto';
@@ -33,7 +35,7 @@ export class AuthController {
 
     @ApiUnauthorizedResponse({ description: 'Unauthorized' })
     @Get('profile')
-    profile(@Request() req) {
-        return this.authService.profile(req.user.username);
+    profile(@CurrentUser() currentUser: Partial<User>) {
+        return currentUser;
     }
 }
