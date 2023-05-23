@@ -1,13 +1,12 @@
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MockRepository } from '../../test/helper/type/mockRepository.type';
+import { SignupDto } from '../auth/dto/signup.dto';
 import { HashService } from '../common/utils/hash/hash.service';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { SignupDto } from 'src/auth/dto/signup.dto';
 
-type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   findOne: jest.fn(),
   create: jest.fn(),
@@ -95,7 +94,7 @@ describe('UsersService', () => {
     it('should call userRepository.save with the correct argument', async () => {
       userRepository.create.mockReturnValue(signupDto);
       await service.create(signupDto);
-      
+
       expect(userRepository.save).toHaveBeenCalledWith(signupDto as User);
     });
 
@@ -109,10 +108,10 @@ describe('UsersService', () => {
     it('should throw the original error if userRepository.save throws a non-unique constraint violation error', async () => {
       const error: any = { code: '12345', message: 'Some other error' };
       userRepository.save.mockRejectedValue(error);
-      
-      try{
+
+      try {
         await service.create(signupDto)
-      }catch(err){
+      } catch (err) {
         expect(err).toEqual(error);
       }
     });

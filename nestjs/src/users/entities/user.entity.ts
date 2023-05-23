@@ -1,5 +1,6 @@
 import { Exclude } from "class-transformer";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Poll } from "../../polls/entities/poll.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -21,4 +22,7 @@ export class User {
 
     @Column({ unique: true })
     email: string;
+
+    @OneToMany(() => Poll, poll => poll.user)
+    polls: Poll[];
 }

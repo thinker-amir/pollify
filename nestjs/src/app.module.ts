@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import typeorm from './config/typeorm';
 import { validate } from './env.validation';
+import { PollsModule } from './polls/polls.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -21,6 +22,7 @@ import { UsersModule } from './users/users.module';
     }),
     AuthModule,
     UsersModule,
+    PollsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

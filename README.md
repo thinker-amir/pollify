@@ -80,10 +80,10 @@ docker compose exec nestjs bash
 Run the tests:
 ```bash
 # run unit tests
-npm run test
+npm run test -- --verbose
 
 # run end to end tests
-npm run test:e2e
+npm run test:e2e -- --verbose
 ```
 The tests should run and display the results in the console.  
 
