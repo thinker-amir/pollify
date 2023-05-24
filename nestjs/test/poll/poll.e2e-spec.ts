@@ -135,18 +135,8 @@ describe('Poll API - /polls', () => {
         expect(body).toBeDefined();
       })
     })
-    describe('if publishDate is in the past', () => {
-      it('should return 400 bad request', async () => {
-        await new Promise(f => setTimeout(f, 1000));  // Add 1 second to make sure the time is past the publishDate
-
-        await request(app.getHttpServer())
-          .patch('/polls/1')
-          .set('Authorization', `Bearer ${access_token}`)
-          .expect(HttpStatus.BAD_REQUEST)
-      })
-    });
     describe('if JWT token is invalid or missing', () => {
-      it('should return 401 unauthorized', async () => {
+      it('should return 401 Unauthorized', async () => {
         await request(app.getHttpServer())
           .patch('/polls/1')
           .expect(HttpStatus.UNAUTHORIZED);

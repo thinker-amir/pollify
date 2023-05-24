@@ -1,13 +1,13 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from 'src/users/entities/user.entity';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
+import { CreatePollDto } from './dto/create-poll.dto';
+import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';
 import { Poll } from './entities/poll.entity';
 import { PollsService } from './polls.service';
-import { CreatePollDto } from './dto/create-poll.dto';
-import { User } from 'src/users/entities/user.entity';
-import { UpdatePollDto } from './dto/update-poll.dto';
 
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   findOne: jest.fn(),
@@ -89,7 +89,7 @@ describe('PollsService', () => {
       const mockPoll = {};
       jest.spyOn(pollRepository, 'findOne').mockResolvedValue(mockPoll);
 
-      const result = await service.findOne(1);
+      const result = await service.findOne({ where: { id: 1 } });
 
       expect(result).toEqual(mockPoll);
     });
@@ -97,7 +97,7 @@ describe('PollsService', () => {
     it('should throw a NotFoundException if the poll is not found', async () => {
       jest.spyOn(pollRepository, 'findOne').mockResolvedValue(null);
 
-      expect(service.findOne(1)).rejects.toThrow(NotFoundException);
+      expect(service.findOne({ where: { id: 1 } })).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -125,12 +125,12 @@ describe('PollsService', () => {
     it('should throw a NotFoundException if the poll is not found', async () => {
       pollRepository.preload.mockReturnValue(undefined);
 
-        try {
-          await service.update(pollId, updatePollDto);
-        } catch (err) {
-          expect(err).toBeInstanceOf(NotFoundException)
-          expect(err.message).toEqual(`Poll #${pollId} not found!`)
-        }
+      try {
+        await service.update(pollId, updatePollDto);
+      } catch (err) {
+        expect(err).toBeInstanceOf(NotFoundException)
+        expect(err.message).toEqual(`Poll #${pollId} not found!`)
+      }
     });
   });
 

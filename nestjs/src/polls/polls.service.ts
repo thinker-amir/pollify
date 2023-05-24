@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
@@ -26,11 +26,11 @@ export class PollsService {
     return await this.pollRepository.find();
   }
 
-  async findOne(id: number) {
-    const poll = await this.pollRepository.findOne({ where: { id } });
+  async findOne(options: FindOneOptions) {
+    const poll = await this.pollRepository.findOne(options);
 
     if (!poll) {
-      throw new NotFoundException(`Poll #${id} not found!`)
+      throw new NotFoundException(`Poll #${options.where['id']} not found!`)
     }
 
     return poll;
@@ -51,7 +51,7 @@ export class PollsService {
   }
 
   async remove(id: number) {
-    const poll = await this.findOne(id);
+    const poll = await this.findOne({ where: { id: +id } });
     return this.pollRepository.remove(poll);
   }
 

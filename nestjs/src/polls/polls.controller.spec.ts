@@ -57,7 +57,7 @@ describe('PollsController', () => {
       const id = "1";
       await controller.findOne(id);
 
-      expect(pollsService.findOne).toHaveBeenCalledWith(+id);
+      expect(pollsService.findOne).toHaveBeenCalledWith({where: {id: +id}});
     })
   })
 
