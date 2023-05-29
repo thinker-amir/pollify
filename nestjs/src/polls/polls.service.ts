@@ -6,6 +6,7 @@ import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';
 import { Poll } from './entities/poll.entity';
+import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class PollsService {
@@ -13,12 +14,18 @@ export class PollsService {
     @InjectRepository(Poll)
     private readonly pollRepository: Repository<Poll>,
     @InjectRepository(PollOption)
-    private readonly pollOpotionRepository: Repository<PollOption>
-  ) { }
+    private readonly pollOpotionRepository: Repository<PollOption>,
+    private readonly cls: ClsService,
+  ) {}
 
-  async create(createPollDto: CreatePollDto, user: User) {
-    const options = await this.preloadOptions(createPollDto.options)
-    const poll = this.pollRepository.create({ ...createPollDto, options, user });
+  async create(createPollDto: CreatePollDto) {
+    const options = await this.preloadOptions(createPollDto.options);
+    const user = await this.cls.get('user');
+    const poll = this.pollRepository.create({
+      ...createPollDto,
+      options,
+      user,
+    });
     await this.pollRepository.save(poll);
   }
 
@@ -30,17 +37,21 @@ export class PollsService {
     const poll = await this.pollRepository.findOne(options);
 
     if (!poll) {
-      throw new NotFoundException(`Poll #${options.where['id']} not found!`)
+      throw new NotFoundException(`Poll #${options.where['id']} not found!`);
     }
 
     return poll;
   }
 
   async update(id: number, updatePollDto: UpdatePollDto) {
-    const options = updatePollDto.options && await this.preloadOptions(updatePollDto.options);
+    const options =
+      updatePollDto.options &&
+      (await this.preloadOptions(updatePollDto.options));
 
     const poll = await this.pollRepository.preload({
-      id: +id, ...updatePollDto, options
+      id: +id,
+      ...updatePollDto,
+      options,
     });
 
     if (!poll) {
@@ -57,8 +68,7 @@ export class PollsService {
 
   private async preloadOptions(options: string[]): Promise<any> {
     return await Promise.all(
-      options.map(label => this.pollOpotionRepository.create({ label }))
-    )
+      options.map((label) => this.pollOpotionRepository.create({ label })),
+    );
   }
-
 }

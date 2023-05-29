@@ -20,13 +20,13 @@ describe('PollsController', () => {
             findAll: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
-            remove: jest.fn()
-          }
-        }
+            remove: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
-    pollsService = module.get<PollsService>(PollsService)
+    pollsService = module.get<PollsService>(PollsService);
     controller = module.get<PollsController>(PollsController);
   });
 
@@ -37,12 +37,11 @@ describe('PollsController', () => {
   describe('create', () => {
     it('should call PollsService.create with the correct parameters', async () => {
       const createPollDto = {} as CreatePollDto;
-      const user = { id: 1 } as User;
-      await controller.create(createPollDto, user);
+      await controller.create(createPollDto);
 
-      expect(pollsService.create).toHaveBeenCalledWith(createPollDto, user);
+      expect(pollsService.create).toHaveBeenCalledWith(createPollDto);
     });
-  })
+  });
 
   describe('findAll', () => {
     it('should call PollsService.findAll', async () => {
@@ -50,34 +49,33 @@ describe('PollsController', () => {
 
       expect(pollsService.findAll).toHaveBeenCalled();
     });
-  })
+  });
 
   describe('findOne', () => {
     it('should call PollsService.findOne with the correct parameters', async () => {
-      const id = "1";
+      const id = '1';
       await controller.findOne(id);
 
-      expect(pollsService.findOne).toHaveBeenCalledWith({where: {id: +id}});
-    })
-  })
+      expect(pollsService.findOne).toHaveBeenCalledWith({ where: { id: +id } });
+    });
+  });
 
   describe('update', () => {
     it('should call PollsService.update with the correct parameters', async () => {
-      const id = "1";
+      const id = '1';
       const updatePollDto: UpdatePollDto = { title: 'the new name' };
       await controller.update(id, updatePollDto);
 
-      expect(pollsService.update).toHaveBeenCalledWith(+id, updatePollDto)
-    })
-  })
+      expect(pollsService.update).toHaveBeenCalledWith(+id, updatePollDto);
+    });
+  });
 
   describe('remove', () => {
     it('should call PollsService.remove with the correct parameters', async () => {
-      const id = "1";
+      const id = '1';
       await controller.remove(id);
 
-      expect(pollsService.remove).toHaveBeenCalledWith(+id)
-    })
-  })
-
+      expect(pollsService.remove).toHaveBeenCalledWith(+id);
+    });
+  });
 });

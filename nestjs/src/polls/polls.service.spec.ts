@@ -1,7 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
+import { ClsService } from 'nestjs-cls';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
@@ -15,13 +15,14 @@ const createMockRepository = <T = any>(): MockRepository<T> => ({
   create: jest.fn(),
   save: jest.fn(),
   remove: jest.fn(),
-  preload: jest.fn()
-})
+  preload: jest.fn(),
+});
 
 describe('PollsService', () => {
   let service: PollsService;
   let pollRepository: MockRepository;
   let pollOpotionRepository: MockRepository;
+  let clsService: ClsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,17 +30,26 @@ describe('PollsService', () => {
         PollsService,
         {
           provide: getRepositoryToken(Poll),
-          useValue: createMockRepository()
+          useValue: createMockRepository(),
         },
         {
           provide: getRepositoryToken(PollOption),
-          useValue: createMockRepository()
+          useValue: createMockRepository(),
+        },
+        {
+          provide: ClsService,
+          useValue: {
+            get: jest.fn(),
+          },
         },
       ],
     }).compile();
 
-    pollOpotionRepository = module.get<MockRepository>(getRepositoryToken(PollOption));
-    pollRepository = module.get<MockRepository>(getRepositoryToken(Poll))
+    clsService = module.get<ClsService>(ClsService);
+    pollOpotionRepository = module.get<MockRepository>(
+      getRepositoryToken(PollOption),
+    );
+    pollRepository = module.get<MockRepository>(getRepositoryToken(Poll));
     service = module.get<PollsService>(PollsService);
   });
 
@@ -48,27 +58,38 @@ describe('PollsService', () => {
   });
 
   describe('create', () => {
-    it('should create a poll with the given options and user', async () => {
-
+    it('should create a poll with the given options', async () => {
       const mockCreatePollDto: CreatePollDto = {
-        "title": "Which Language do you love more?",
-        "description": "I know it is a difficult decision :)",
-        "publishDate": new Date(),
-        "duration": 5,
-        "options": [
-          "Typescript"
-        ]
+        title: 'Which Language do you love more?',
+        description: 'I know it is a difficult decision :)',
+        publishDate: new Date(),
+        duration: 5,
+        options: ['Typescript'],
       };
 
       const mockUser = { id: 1, username: 'user1' };
       const mockPollOption = { id: 1, label: 'Typescript' } as PollOption;
 
-      jest.spyOn(pollOpotionRepository, 'create').mockResolvedValue(mockPollOption);
-      jest.spyOn(pollRepository, 'create').mockReturnValue({ ...mockCreatePollDto, options: mockPollOption, user: mockUser });
+      jest
+        .spyOn(pollOpotionRepository, 'create')
+        .mockResolvedValue(mockPollOption);
 
-      await service.create(mockCreatePollDto, mockUser as User);
+      jest.spyOn(pollRepository, 'create').mockReturnValue({
+        ...mockCreatePollDto,
+        options: mockPollOption,
+        user: mockUser,
+      });
 
-      expect(pollRepository.create).toHaveBeenCalledWith({ ...mockCreatePollDto, options: [mockPollOption], user: mockUser });
+      jest.spyOn(clsService, 'get').mockImplementation(async () => mockUser);
+
+      await service.create(mockCreatePollDto);
+
+      expect(clsService.get).toHaveBeenCalledWith('user');
+      expect(pollRepository.create).toHaveBeenCalledWith({
+        ...mockCreatePollDto,
+        options: [mockPollOption],
+        user: mockUser,
+      });
       expect(pollRepository.save).toHaveBeenCalled();
     });
   });
@@ -97,29 +118,33 @@ describe('PollsService', () => {
     it('should throw a NotFoundException if the poll is not found', async () => {
       jest.spyOn(pollRepository, 'findOne').mockResolvedValue(null);
 
-      expect(service.findOne({ where: { id: 1 } })).rejects.toThrow(NotFoundException);
+      expect(service.findOne({ where: { id: 1 } })).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
   describe('update', () => {
-    const updatePollDto: UpdatePollDto = { title: 'The New Title', options: ['Option 1 updated', 'Option 2 updated'] };
+    const updatePollDto: UpdatePollDto = {
+      title: 'The New Title',
+      options: ['Option 1 updated', 'Option 2 updated'],
+    };
     const pollId = 1;
     it('should update a poll with the given id and options', async () => {
-
       const mockPoll = {
         id: pollId,
         title: 'The Old Title',
         options: [],
       };
 
-      const expectedCoffee = { ...mockPoll, ...updatePollDto }
+      const expectedCoffee = { ...mockPoll, ...updatePollDto };
 
       pollRepository.preload.mockReturnValue(expectedCoffee);
       pollRepository.save.mockReturnValue(expectedCoffee);
 
       const coffee = await service.update(pollId, updatePollDto);
 
-      expect(coffee).toEqual(expectedCoffee)
+      expect(coffee).toEqual(expectedCoffee);
     });
 
     it('should throw a NotFoundException if the poll is not found', async () => {
@@ -128,8 +153,8 @@ describe('PollsService', () => {
       try {
         await service.update(pollId, updatePollDto);
       } catch (err) {
-        expect(err).toBeInstanceOf(NotFoundException)
-        expect(err.message).toEqual(`Poll #${pollId} not found!`)
+        expect(err).toBeInstanceOf(NotFoundException);
+        expect(err.message).toEqual(`Poll #${pollId} not found!`);
       }
     });
   });
@@ -150,5 +175,4 @@ describe('PollsService', () => {
       expect(service.remove(1)).rejects.toThrow(NotFoundException);
     });
   });
-
 });

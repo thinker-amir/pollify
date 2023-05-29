@@ -8,17 +8,25 @@ import typeorm from './config/typeorm';
 import { validate } from './env.validation';
 import { PollsModule } from './polls/polls.module';
 import { UsersModule } from './users/users.module';
+import { ClsModule } from 'nestjs-cls';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       validate,
       isGlobal: true,
-      load: [typeorm]
+      load: [typeorm],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => (configService.get('typeorm'))
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
+    }),
+    ClsModule.forRoot({
+      global: true,
+      middleware: {
+        mount: true,
+      },
     }),
     AuthModule,
     UsersModule,
@@ -27,5 +35,4 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [AppService],
 })
-
-export class AppModule { }
+export class AppModule {}

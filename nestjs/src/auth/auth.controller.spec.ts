@@ -7,14 +7,14 @@ const mockAuthService: Partial<AuthService> = {
   signIn: jest.fn(),
   signUp: jest.fn(),
   profile: jest.fn(),
-}
+};
 
 const mockUser = {
   name: 'John',
   surname: 'Doe',
   email: 'john.doe@test.com',
   username: 'testuser',
-  password: 'testpassword'
+  password: 'testpassword',
 };
 
 describe('AuthController', () => {
@@ -24,12 +24,13 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [{
-        provide: AuthService,
-        useValue: mockAuthService
-      }]
-    })
-      .compile();
+      providers: [
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
+      ],
+    }).compile();
 
     authService = module.get<AuthService>(AuthService);
     controller = module.get<AuthController>(AuthController);
@@ -42,7 +43,11 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should return a JWT token', async () => {
       const user = { username: 'testuser', password: 'testpassword' };
-      jest.spyOn(authService, 'signIn').mockImplementation(() => Promise.resolve({ access_token: 'testtoken' }));
+      jest
+        .spyOn(authService, 'signIn')
+        .mockImplementation(() =>
+          Promise.resolve({ access_token: 'testtoken' }),
+        );
 
       const result = await controller.signIn({ user });
 
@@ -61,11 +66,9 @@ describe('AuthController', () => {
   });
 
   describe('profile', () => {
-    it('should return the current user', () => {
-      const user = { id: 1, name: 'John Doe', email: 'john@example.com' };
-      const result = controller.profile(user);
-      expect(result).toBe(user);
+    it('should call PollsService.findOne with the correct parameters', async () => {
+      await controller.profile();
+      expect(authService.profile).toHaveBeenCalled();
     });
   });
-
 });

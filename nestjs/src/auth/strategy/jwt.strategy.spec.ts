@@ -5,10 +5,12 @@ import { Strategy } from 'passport-jwt';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
 import { JwtStrategy } from './jwt.strategy';
+import { ClsService } from 'nestjs-cls';
 
 describe('JwtStrategy', () => {
   let jwtStrategy: JwtStrategy;
-  let usersService: UsersService
+  let usersService: UsersService;
+  let clsService: ClsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,10 +28,17 @@ describe('JwtStrategy', () => {
             findOne: jest.fn(),
           },
         },
+        {
+          provide: ClsService,
+          useValue: {
+            set: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
-    usersService = module.get<UsersService>(UsersService)
+    clsService = module.get<ClsService>(ClsService);
+    usersService = module.get<UsersService>(UsersService);
     jwtStrategy = module.get<JwtStrategy>(JwtStrategy);
   });
 
@@ -46,20 +55,27 @@ describe('JwtStrategy', () => {
       const mockUser = { id: 1, username: 'testuser' };
       const mockPayload = { username: mockUser.username };
 
-      jest.spyOn(usersService, 'findOne').mockImplementation(async () => mockUser as User);
+      jest
+        .spyOn(usersService, 'findOne')
+        .mockImplementation(async () => mockUser as User);
 
       const result = await jwtStrategy.validate(mockPayload);
 
       expect(usersService.findOne).toHaveBeenCalledWith(mockPayload);
+      expect(clsService.set).toHaveBeenCalledWith('user', mockUser);
       expect(result).toEqual(mockUser);
     });
 
     it('should throw UnauthorizedException if findOne throws an error', async () => {
       const mockPayload = { username: 'testuser' };
 
-      jest.spyOn(usersService, 'findOne').mockImplementation(async () => { throw new Error(); });
+      jest.spyOn(usersService, 'findOne').mockImplementation(async () => {
+        throw new Error();
+      });
 
-      await expect(jwtStrategy.validate(mockPayload)).rejects.toThrow(UnauthorizedException);
+      await expect(jwtStrategy.validate(mockPayload)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });
