@@ -8,7 +8,8 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: "dev-secret"
+      POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
+      TZ: '${TIME_ZONE}'
     restart: always
 
   test-postgres:
@@ -17,7 +18,8 @@ services:
     ports:
       - 5433:5432
     environment:
-      POSTGRES_PASSWORD: "test-secret"
+      POSTGRES_PASSWORD: "${TEST_DATABASE_PASSWORD}"
+      TZ: '${TIME_ZONE}'
     restart: always
 
   nestjs:
@@ -27,8 +29,13 @@ services:
     container_name: nestjs
     working_dir: /usr/src/nestjs
     tty: true
+    environment:
+      TZ: '${TIME_ZONE}'
     volumes:
       - ./nestjs:/usr/src/nestjs
+      - type: bind
+        source: ./.env
+        target: /usr/src/nestjs/.env
     command: npm run start:dev
     ports:
       - '3000:3000'

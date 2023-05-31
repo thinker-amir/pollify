@@ -9,6 +9,7 @@ import { validate } from './env.validation';
 import { PollsModule } from './polls/polls.module';
 import { UsersModule } from './users/users.module';
 import { ClsModule } from 'nestjs-cls';
+import { ParticipatesModule } from './participates/participates.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ClsModule } from 'nestjs-cls';
     AuthModule,
     UsersModule,
     PollsModule,
+    ParticipatesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

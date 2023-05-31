@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Participate } from "../../participates/entities/participate.entity";
 import { Poll } from "./poll.entity";
 
 @Entity()
@@ -15,4 +16,7 @@ export class PollOption {
       orphanedRowAction: "delete"
     })
   poll: Poll;
+
+  @OneToMany(() => Participate, participate => participate.user)
+  participates: Participate[];
 }

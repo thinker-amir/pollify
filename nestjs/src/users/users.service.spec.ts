@@ -4,14 +4,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { HashService } from '../common/utils/hash/hash.service';
+import { mockRepository } from '../common/utils/test/repository.mock';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-
-const createMockRepository = <T = any>(): MockRepository<T> => ({
-  findOne: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-})
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -24,19 +19,19 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: createMockRepository()
+          useValue: mockRepository(),
         },
         {
           provide: HashService,
           useValue: {
-            hash: jest.fn()
-          }
-        }
+            hash: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     hashService = module.get<HashService>(HashService);
-    userRepository = module.get<MockRepository>(getRepositoryToken(User))
+    userRepository = module.get<MockRepository>(getRepositoryToken(User));
     service = module.get<UsersService>(UsersService);
   });
 
@@ -76,7 +71,7 @@ describe('UsersService', () => {
       surname: 'Doe',
       email: 'john.doe@test.com',
       username: 'testuser',
-      password: 'testpassword'
+      password: 'testpassword',
     };
 
     it('should call hashService.hash', async () => {
@@ -102,7 +97,9 @@ describe('UsersService', () => {
       const error = { code: '23505', detail: 'Username already exists' };
       userRepository.save.mockRejectedValue(error);
 
-      await expect(service.create(signupDto)).rejects.toThrow(ConflictException);
+      await expect(service.create(signupDto)).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('should throw the original error if userRepository.save throws a non-unique constraint violation error', async () => {
@@ -110,7 +107,7 @@ describe('UsersService', () => {
       userRepository.save.mockRejectedValue(error);
 
       try {
-        await service.create(signupDto)
+        await service.create(signupDto);
       } catch (err) {
         expect(err).toEqual(error);
       }

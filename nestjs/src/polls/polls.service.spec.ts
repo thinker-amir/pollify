@@ -3,20 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
+import { mockRepository } from '../common/utils/test/repository.mock';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';
 import { Poll } from './entities/poll.entity';
 import { PollsService } from './polls.service';
-
-const createMockRepository = <T = any>(): MockRepository<T> => ({
-  findOne: jest.fn(),
-  find: jest.fn(),
-  create: jest.fn(),
-  save: jest.fn(),
-  remove: jest.fn(),
-  preload: jest.fn(),
-});
 
 describe('PollsService', () => {
   let service: PollsService;
@@ -30,11 +22,11 @@ describe('PollsService', () => {
         PollsService,
         {
           provide: getRepositoryToken(Poll),
-          useValue: createMockRepository(),
+          useValue: mockRepository(),
         },
         {
           provide: getRepositoryToken(PollOption),
-          useValue: createMockRepository(),
+          useValue: mockRepository(),
         },
         {
           provide: ClsService,
