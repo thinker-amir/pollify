@@ -15,17 +15,14 @@ export class ParticipateTimeValidator implements ValidatorConstraintInterface {
     value: any,
     validationArguments?: ValidationArguments,
   ): Promise<boolean> {
+    const now = new Date();
     const pollOption = await this.pollOptionsService.findOne({
       where: { id: value },
       relations: ['poll'],
     });
-
-    const currentDate = new Date();
-    const publishDate = new Date(pollOption.poll.publishDate);
-    const expireDate = new Date(publishDate);
-    expireDate.setMinutes(expireDate.getMinutes() + pollOption.poll.duration);
-
-    return currentDate > publishDate && currentDate < expireDate;
+    return (
+      pollOption.poll.publishDate < now && pollOption.poll.expireDate > now
+    );
   }
   defaultMessage?(validationArguments?: ValidationArguments): string {
     return "Can't participate in a poll that is not available at this time";

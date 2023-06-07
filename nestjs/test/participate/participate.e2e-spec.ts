@@ -19,7 +19,7 @@ const createPollDto: CreatePollDto = {
   title: 'Which Language do you love more?',
   description: 'I know it is a difficult decision :)',
   publishDate: publishDate,
-  duration: 5,
+  durationInMinutes: 5,
   options: ['Typescript', 'PHP', 'Java', 'Python', 'Go'],
 };
 

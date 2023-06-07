@@ -32,15 +32,12 @@ describe('ParticipateTimeValidator', () => {
 
   describe('validate', () => {
     const pollOptionId = 1;
-    const publishDate = new Date();
+    const now = new Date();
     it('should return true if the current date is within the poll availability range', async () => {
-      publishDate.setMinutes(publishDate.getMinutes() - 5);
-      const duration = 60;
-
       const pollOption = {
         poll: {
-          publishDate,
-          duration,
+          publishDate: new Date(now.getTime()),
+          expireDate: new Date(now.getTime() + 1000),
         },
       } as PollOption;
 
@@ -51,13 +48,10 @@ describe('ParticipateTimeValidator', () => {
     });
 
     it('should return false if the current date is outside the poll availability range', async () => {
-      publishDate.setMinutes(publishDate.getMinutes() - 120);
-      const duration = 60;
-
       const pollOption = {
         poll: {
-          publishDate,
-          duration,
+          publishDate: new Date(now.getTime() - 100),
+          expireDate: new Date(now.getTime() - 30),
         },
       } as PollOption;
 

@@ -55,7 +55,7 @@ describe('PollsService', () => {
         title: 'Which Language do you love more?',
         description: 'I know it is a difficult decision :)',
         publishDate: new Date(),
-        duration: 5,
+        durationInMinutes: 5,
         options: ['Typescript'],
       };
 
@@ -74,12 +74,18 @@ describe('PollsService', () => {
 
       jest.spyOn(clsService, 'get').mockImplementation(async () => mockUser);
 
+      const expireDate = new Date(mockCreatePollDto.publishDate);
+      expireDate.setMinutes(
+        expireDate.getMinutes() + mockCreatePollDto.durationInMinutes,
+      );
+
       await service.create(mockCreatePollDto);
 
       expect(clsService.get).toHaveBeenCalledWith('user');
       expect(pollRepository.create).toHaveBeenCalledWith({
         ...mockCreatePollDto,
         options: [mockPollOption],
+        expireDate,
         user: mockUser,
       });
       expect(pollRepository.save).toHaveBeenCalled();

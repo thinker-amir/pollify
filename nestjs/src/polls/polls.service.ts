@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ClsService } from 'nestjs-cls';
 import { FindOneOptions, Repository } from 'typeorm';
-import { User } from '../users/entities/user.entity';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';
 import { Poll } from './entities/poll.entity';
-import { ClsService } from 'nestjs-cls';
 
 @Injectable()
 export class PollsService {
@@ -18,14 +17,24 @@ export class PollsService {
     private readonly cls: ClsService,
   ) {}
 
-  async create(createPollDto: CreatePollDto) {
+  async create(createPollDto: CreatePollDto): Promise<void> {
     const options = await this.preloadOptions(createPollDto.options);
+    const publishDate = new Date(createPollDto.publishDate);
     const user = await this.cls.get('user');
+
+    // expireTime = publish time + duration (in minutes)
+    const expireDate = new Date(publishDate);
+    expireDate.setMinutes(
+      expireDate.getMinutes() + createPollDto.durationInMinutes,
+    );
+
     const poll = this.pollRepository.create({
       ...createPollDto,
+      expireDate,
       options,
       user,
     });
+
     await this.pollRepository.save(poll);
   }
 
