@@ -17,6 +17,6 @@ export class PollOption {
     })
   poll: Poll;
 
-  @OneToMany(() => Participate, participate => participate.user)
+  @OneToMany(() => Participate, participate => participate.pollOption)
   participates: Participate[];
 }

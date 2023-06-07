@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';
@@ -38,8 +38,8 @@ export class PollsService {
     await this.pollRepository.save(poll);
   }
 
-  async findAll() {
-    return await this.pollRepository.find();
+  async findAll(options?: FindManyOptions) {
+    return await this.pollRepository.find(options);
   }
 
   async findOne(options: FindOneOptions) {

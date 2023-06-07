@@ -9,13 +9,11 @@ import { initMockUser } from '../helper/auth.helper';
 const publishDate = new Date();
 publishDate.setSeconds(publishDate.getSeconds() + 1);
 const createPollDto: CreatePollDto = {
-  "title": "Which Language do you love more?",
-  "description": "I know it is a difficult decision :)",
-  "publishDate": publishDate,
-  "duration": 5,
-  "options": [
-    "Typescript", "PHP", "Java", "Python", "Go"
-  ]
+  title: 'Which Language do you love more?',
+  description: 'I know it is a difficult decision :)',
+  publishDate: publishDate,
+  durationInMinutes: 5,
+  options: ['Typescript', 'PHP', 'Java', 'Python', 'Go'],
 };
 
 describe('Poll API - /polls', () => {
@@ -33,7 +31,7 @@ describe('Poll API - /polls', () => {
       new ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,
-        transformOptions: { enableImplicitConversion: true }
+        transformOptions: { enableImplicitConversion: true },
       }),
     );
 
@@ -43,15 +41,14 @@ describe('Poll API - /polls', () => {
   });
 
   describe('Create [POST /polls]', () => {
-
     describe('with a valid request body', () => {
       it('should successfully create a poll and return a 201 Created status', async () => {
         return request(app.getHttpServer())
           .post('/polls')
           .set('Authorization', `Bearer ${access_token}`)
           .send(createPollDto)
-          .expect(HttpStatus.CREATED)
-      })
+          .expect(HttpStatus.CREATED);
+      });
     });
     describe('with an invalid request body', () => {
       it('should return a 400 Bad Request status', async () => {
@@ -60,16 +57,16 @@ describe('Poll API - /polls', () => {
           .post('/polls')
           .set('Authorization', `Bearer ${access_token}`)
           .send(invalidBody as CreatePollDto)
-          .expect(HttpStatus.BAD_REQUEST)
-      })
-    })
+          .expect(HttpStatus.BAD_REQUEST);
+      });
+    });
     describe('if JWT token is invalid or missing', () => {
       it('should return 401 unauthorized', async () => {
         await request(app.getHttpServer())
           .post('/polls')
           .send(createPollDto)
           .expect(401);
-      })
+      });
     });
   });
 
@@ -84,13 +81,11 @@ describe('Poll API - /polls', () => {
           expect(body.length).toEqual(1);
           expect(body[0].title).toEqual(createPollDto.title);
         });
-    })
+    });
     describe('if JWT token is invalid or missing', () => {
       it('should return 401 unauthorized', async () => {
-        await request(app.getHttpServer())
-          .get('/polls')
-          .expect(401);
-      })
+        await request(app.getHttpServer()).get('/polls').expect(401);
+      });
     });
   });
 
@@ -101,13 +96,11 @@ describe('Poll API - /polls', () => {
         .set('Authorization', `Bearer ${access_token}`)
         .expect(HttpStatus.OK);
       expect(body).toBeDefined();
-    })
+    });
     describe('if JWT token is invalid or missing', () => {
       it('should return 401 unauthorized', async () => {
-        await request(app.getHttpServer())
-          .get('/polls/1')
-          .expect(401);
-      })
+        await request(app.getHttpServer()).get('/polls/1').expect(401);
+      });
     });
   });
 
@@ -122,7 +115,7 @@ describe('Poll API - /polls', () => {
           .expect(HttpStatus.OK);
         expect(body).toBeDefined();
         expect(body.title).toEqual(updateBody.title);
-      })
+      });
     });
     describe('with an invalid request body', () => {
       it('should return a 400 Bad Request status', async () => {
@@ -133,16 +126,16 @@ describe('Poll API - /polls', () => {
           .send(invalidBody as UpdatePollDto)
           .expect(HttpStatus.BAD_REQUEST);
         expect(body).toBeDefined();
-      })
-    })
+      });
+    });
     describe('if JWT token is invalid or missing', () => {
       it('should return 401 Unauthorized', async () => {
         await request(app.getHttpServer())
           .patch('/polls/1')
           .expect(HttpStatus.UNAUTHORIZED);
-      })
+      });
     });
-  })
+  });
 
   describe('Delete one [DELETE /polls/:id]', () => {
     it('should successfully remove the existing poll and then return it', async () => {
@@ -151,19 +144,15 @@ describe('Poll API - /polls', () => {
         .set('Authorization', `Bearer ${access_token}`)
         .expect(HttpStatus.OK);
       expect(body).toBeDefined();
-    })
+    });
     describe('if JWT token is invalid or missing', () => {
       it('should return 401 unauthorized', async () => {
-        await request(app.getHttpServer())
-          .delete('/polls/1')
-          .expect(401);
-      })
+        await request(app.getHttpServer()).delete('/polls/1').expect(401);
+      });
     });
   });
 
-
-
   afterAll(async () => {
     await app.close();
-  })
+  });
 });

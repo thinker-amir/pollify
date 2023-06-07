@@ -10,6 +10,7 @@ import { PollsModule } from './polls/polls.module';
 import { UsersModule } from './users/users.module';
 import { ClsModule } from 'nestjs-cls';
 import { ParticipatesModule } from './participates/participates.module';
+import { RealTimeModule } from './real-time/real-time.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ParticipatesModule } from './participates/participates.module';
     UsersModule,
     PollsModule,
     ParticipatesModule,
+    RealTimeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
