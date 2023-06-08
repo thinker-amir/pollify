@@ -5,6 +5,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { ClsService } from 'nestjs-cls';
+import { PollOptionsService } from '../../polls/poll-options.service';
 import { ParticipatesService } from '../participates.service';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class HasNotParticipatedValidator
 {
   constructor(
     private readonly participatesService: ParticipatesService,
+    private readonly pollOptionsService: PollOptionsService,
     private readonly cls: ClsService,
   ) {}
 
@@ -22,9 +24,12 @@ export class HasNotParticipatedValidator
     args: ValidationArguments,
   ): Promise<boolean> {
     const user = this.cls.get('user');
+    const optionsIds = await this.pollOptionsService.findSiblingIds(
+      pollOptionId,
+    );
     try {
-      const existingParticipation = await this.participatesService.findOne({
-        where: { user, pollOption: { id: pollOptionId } },
+      await this.participatesService.findOne({
+        where: { user, pollOption: optionsIds },
       });
     } catch (error) {
       return error.status === HttpStatus.NOT_FOUND;

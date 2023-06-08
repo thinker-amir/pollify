@@ -3,10 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClsService } from 'nestjs-cls';
 import { ParticipatesService } from '../participates.service';
 import { HasNotParticipatedValidator } from './has-not-participate-validator';
+import { PollOptionsService } from '../../polls/poll-options.service';
 
 describe('HasNotParticipatedValidator', () => {
   let validator: HasNotParticipatedValidator;
   let participatesService: ParticipatesService;
+  let pollOptionsService: PollOptionsService;
   let cls: ClsService;
 
   beforeEach(async () => {
@@ -17,6 +19,12 @@ describe('HasNotParticipatedValidator', () => {
           provide: ParticipatesService,
           useValue: {
             findOne: jest.fn(),
+          },
+        },
+        {
+          provide: PollOptionsService,
+          useValue: {
+            findSiblingIds: jest.fn(),
           },
         },
         {
@@ -31,6 +39,8 @@ describe('HasNotParticipatedValidator', () => {
     validator = module.get<HasNotParticipatedValidator>(
       HasNotParticipatedValidator,
     );
+
+    pollOptionsService = module.get<PollOptionsService>(PollOptionsService);
     participatesService = module.get<ParticipatesService>(ParticipatesService);
     cls = module.get<ClsService>(ClsService);
   });

@@ -16,7 +16,7 @@ const mockPollOption: PollOption = {
 
 describe('PollOptionsService', () => {
   let service: PollOptionsService;
-  let pollOpotionRepository: MockRepository;
+  let pollOptionRepository: MockRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -29,7 +29,7 @@ describe('PollOptionsService', () => {
       ],
     }).compile();
 
-    pollOpotionRepository = module.get<MockRepository>(
+    pollOptionRepository = module.get<MockRepository>(
       getRepositoryToken(PollOption),
     );
     service = module.get<PollOptionsService>(PollOptionsService);
@@ -42,17 +42,36 @@ describe('PollOptionsService', () => {
   describe('findOne', () => {
     const options = { where: { id: 1 } };
     it('should return a poll option if found', async () => {
-      pollOpotionRepository.findOne.mockResolvedValue(mockPollOption);
+      pollOptionRepository.findOne.mockResolvedValue(mockPollOption);
       const result = await service.findOne(options);
 
-      expect(pollOpotionRepository.findOne).toHaveBeenCalledWith(options);
+      expect(pollOptionRepository.findOne).toHaveBeenCalledWith(options);
       expect(result).toEqual(mockPollOption);
     });
 
     it('should throw NotFoundException if poll option not found', async () => {
-      pollOpotionRepository.findOne.mockResolvedValue(undefined);
+      pollOptionRepository.findOne.mockResolvedValue(undefined);
 
       await expect(service.findOne(options)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('findSiblingIds', () => {
+    it('should return an array of sibling ids', async () => {
+      const id = 1;
+      const siblingIds = [{ id: 2 }, { id: 3 }];
+
+      pollOptionRepository.createQueryBuilder.mockReturnValueOnce({
+        select: jest.fn().mockReturnThis(),
+        innerJoin: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        getRawMany: jest.fn().mockResolvedValueOnce(siblingIds),
+      });
+
+      const result = await service.findSiblingIds(id);
+
+      expect(pollOptionRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(result).toEqual(siblingIds);
     });
   });
 });

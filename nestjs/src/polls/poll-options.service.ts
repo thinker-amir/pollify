@@ -21,4 +21,13 @@ export class PollOptionsService {
 
     return pollOption;
   }
+
+  findSiblingIds(id: number) {
+    return this.pollOpotionRepository
+      .createQueryBuilder('po')
+      .select('po.id as id')
+      .innerJoin('poll_option', 'po2', 'po."pollId" = po2."pollId"')
+      .where('po2.id = :id', { id })
+      .getRawMany();
+  }
 }
