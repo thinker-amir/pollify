@@ -80,6 +80,8 @@ describe('Poll API - /polls', () => {
           expect(body).toBeDefined();
           expect(body.length).toEqual(1);
           expect(body[0].title).toEqual(createPollDto.title);
+          expect(body[0].user_selected_option).toEqual(null);
+          expect(body[0].user_allowed_to_participate).toEqual(false);
         });
     });
     describe('if JWT token is invalid or missing', () => {

@@ -17,7 +17,9 @@ describe('PollsController', () => {
           useValue: {
             create: jest.fn(),
             findAll: jest.fn(),
+            findAllWithUserParticipation: jest.fn(),
             findOne: jest.fn(),
+            findOneWithUserParticipation: jest.fn(),
             update: jest.fn(),
             remove: jest.fn(),
           },
@@ -43,19 +45,19 @@ describe('PollsController', () => {
   });
 
   describe('findAll', () => {
-    it('should call PollsService.findAll', async () => {
+    it('should call PollsService.findAllWithUserParticipation', async () => {
       await controller.findAll();
 
-      expect(pollsService.findAll).toHaveBeenCalled();
+      expect(pollsService.findAllWithUserParticipation).toHaveBeenCalled();
     });
   });
 
   describe('findOne', () => {
-    it('should call PollsService.findOne with the correct parameters', async () => {
+    it('should call PollsService.findOneWithUserParticipation with the correct parameters', async () => {
       const id = 1;
       await controller.findOne(id);
 
-      expect(pollsService.findOne).toHaveBeenCalledWith({ where: { id } });
+      expect(pollsService.findOneWithUserParticipation).toHaveBeenCalledWith({ where: { id } });
     });
   });
 

@@ -36,13 +36,13 @@ export class PollsController {
 
   @Get()
   async findAll() {
-    return await this.pollsService.findAll();
+    return await this.pollsService.findAllWithUserParticipation();
   }
 
   @ApiNotFoundResponse({ description: 'Not found!' })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.pollsService.findOne({ where: { id } });
+    return this.pollsService.findOneWithUserParticipation({ where: { id } });
   }
 
   @ApiNotFoundResponse({ description: 'Not found!' })
