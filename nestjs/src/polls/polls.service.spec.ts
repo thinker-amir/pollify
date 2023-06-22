@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
-import { mockRepository } from '../common/utils/test/repository.mock';
+import { mockRepository } from '../../test/helper/repository.mock';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { PollOption } from './entities/poll-option.entity';

@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ClsService } from 'nestjs-cls';
 import { FindOneOptions, Repository } from 'typeorm';
@@ -47,7 +43,6 @@ export class ParticipatesService {
 
   async update(id: number, updateParticipateDto: UpdateParticipateDto) {
     const participate = await this.findOne({ where: { id } });
-    this.checkAuthorization(participate);
 
     const pollOption = await this.pollOptionsService.findOne({
       where: { id: updateParticipateDto.pollOption },
@@ -60,17 +55,7 @@ export class ParticipatesService {
 
   async remove(id: number) {
     const participate = await this.findOne({ where: { id } });
-    this.checkAuthorization(participate);
 
     return this.participateRepository.remove(participate);
-  }
-
-  private checkAuthorization(participate: Participate) {
-    const user = this.cls.get('user');
-    if (participate.user.id !== user.id) {
-      throw new ForbiddenException(
-        `You are not authorized to update or remove this participate!`,
-      );
-    }
   }
 }

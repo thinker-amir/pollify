@@ -11,6 +11,7 @@ import { UsersModule } from './users/users.module';
 import { ClsModule } from 'nestjs-cls';
 import { ParticipatesModule } from './participates/participates.module';
 import { RealTimeModule } from './real-time/real-time.module';
+import { S3Module } from './aws/s3/s3.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { RealTimeModule } from './real-time/real-time.module';
     PollsModule,
     ParticipatesModule,
     RealTimeModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

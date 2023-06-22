@@ -12,6 +12,10 @@ import { HasNotParticipatedValidator } from './validator/has-not-participate-val
     ParticipatesService,
     ParticipateTimeValidator,
     HasNotParticipatedValidator,
+    {
+      provide: 'OwnerGuardService',
+      useClass: ParticipatesService,
+    },
   ],
   controllers: [ParticipatesController],
   imports: [TypeOrmModule.forFeature([Participate]), PollsModule],

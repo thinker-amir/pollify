@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
 import { SignupDto } from '../auth/dto/signup.dto';
 import { HashService } from '../common/utils/hash/hash.service';
-import { mockRepository } from '../common/utils/test/repository.mock';
+import { mockRepository } from '../../test/helper/repository.mock';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 

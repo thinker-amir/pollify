@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -16,6 +17,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { OwnerGuard } from '../common/guard/owner.guard';
 import { CreateParticipateDto } from './dto/create-participate.dto';
 import { UpdateParticipateDto } from './dto/update-participate.dto';
 import { ParticipatesService } from './participates.service';
@@ -45,6 +47,7 @@ export class ParticipatesController {
     return this.participateService.findOne({ where: { id } });
   }
 
+  @UseGuards(OwnerGuard)
   @ApiNotFoundResponse({ description: 'Not found!' })
   @ApiForbiddenResponse({ description: 'Forbidden response' })
   @Patch(':id')
@@ -55,6 +58,7 @@ export class ParticipatesController {
     return this.participateService.update(id, updateParticipateDto);
   }
 
+  @UseGuards(OwnerGuard)
   @ApiNotFoundResponse({ description: 'Not found!' })
   @ApiForbiddenResponse({ description: 'Forbidden response' })
   @Delete(':id')

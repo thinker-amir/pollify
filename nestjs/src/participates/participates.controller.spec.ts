@@ -22,6 +22,10 @@ describe('ParticipateController', () => {
             remove: jest.fn(),
           },
         },
+        {
+          provide: 'OwnerGuardService',
+          useValue: { findOne: jest.fn() },
+        },
       ],
     }).compile();
 

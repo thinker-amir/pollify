@@ -1,15 +1,74 @@
-## 🗳️ Pollify 🗳️  
+## 🗳️ Pollify 🗳️
 
 Pollify is an online polling system that allows users to create, manage, and participate in polls. With customizable options and real-time results, Pollify is a powerful tool for gathering feedback and opinions from your audience.
 
 ### 🌟 Features
 
 > **🔐 FeaturesUser authentication:** Register and log in to create and manage polls.  
-**📝 Poll creation:** Create polls with customizable questions and options.  
-**🔗 Poll sharing:** Share polls with others using unique URLs.  
-**⏱️ Real-time results:** View poll results in real-time as votes are cast.  
-**🛠️ Poll management:** Edit and delete polls you've created.  
-**🗳️ Poll participation:** Vote in polls created by others.
+> **📝 Poll creation:** Create polls with customizable questions and options.  
+> **🔗 Poll sharing:** Share polls with others using unique URLs.  
+> **⏱️ Real-time results:** View poll results in real-time as votes are cast.  
+> **🛠️ Poll management:** Edit and delete polls you've created.  
+> **🗳️ Poll participation:** Vote in polls created by others.
+
+### 💻 Technologies Used
+
+This project utilizes various technologies and frameworks. Here are the key technologies used:
+
+<table>
+  <tr>
+    <th>Technology</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>NestJs</td>
+    <td>A progressive Node.js framework for building efficient and scalable server-side applications.</td>
+  </tr>
+  <tr>
+    <td>Docker</td>
+    <td>A containerization platform used to package the application and its dependencies into isolated containers.</td>
+  </tr>
+  <tr>
+    <td>Postgres</td>
+    <td>A powerful open-source relational database management system.</td>
+  </tr>
+  <tr>
+    <td>TypeORM</td>
+    <td>An Object-Relational Mapping (ORM) library for TypeScript and JavaScript that simplifies database integration.</td>
+  </tr>
+  <tr>
+    <td>Localstack</td>
+    <td>A fully functional local AWS cloud stack that enables local development and testing.</td>
+  </tr>
+  <tr>
+    <td>AWS S3</td>
+    <td>Amazon Simple Storage Service for storing and retrieving data objects, such as cover images in this project.</td>
+  </tr>
+  <tr>
+    <td>Jest</td>
+    <td>A JavaScript testing framework for unit testing and assertions.</td>
+  </tr>
+  <tr>
+    <td>TypeScript</td>
+    <td>A typed superset of JavaScript that compiles to plain JavaScript.</td>
+  </tr>
+  <tr>
+    <td>Passport.js</td>
+    <td>An authentication middleware for Node.js that supports various authentication strategies.</td>
+  </tr>
+  <tr>
+    <td>JWT Strategy</td>
+    <td>JSON Web Token (JWT) authentication strategy used for securing API endpoints.</td>
+  </tr>
+  <tr>
+    <td>Socket.io</td>
+    <td>A library for enabling real-time, bidirectional communication between web clients and servers.</td>
+  </tr>
+  <tr>
+    <td>Swagger</td>
+    <td>A tool for documenting and testing APIs.</td>
+  </tr>
+</table>
 
 ### 📚 Table of Contents
 
@@ -57,16 +116,16 @@ Run the project with Docker Compose
 docker compose up -d
 ```
 
-Attach to the NestJS container:
-
-```bash
-docker compose exec nestjs bash
-```
-
 Install Node.js dependencies:
 
 ```bash
-npm i
+docker compose exec nestjs npm i
+```
+
+Create a bucket to store the cover images in AWS S3:
+
+```bash
+docker compose exec localstack awslocal s3api create-bucket --bucket pollify-poll-cover
 ```
 
 **🎉 Congratulation! 🎉**  

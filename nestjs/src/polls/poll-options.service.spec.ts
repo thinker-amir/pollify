@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { MockRepository } from 'test/helper/type/mockRepository.type';
-import { mockRepository } from '../common/utils/test/repository.mock';
+import { mockRepository } from '../../test/helper/repository.mock';
 import { PollOption } from './entities/poll-option.entity';
 import { PollOptionsService } from './poll-options.service';
 import { Poll } from './entities/poll.entity';

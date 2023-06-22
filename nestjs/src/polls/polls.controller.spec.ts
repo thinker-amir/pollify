@@ -24,6 +24,10 @@ describe('PollsController', () => {
             remove: jest.fn(),
           },
         },
+        {
+          provide: 'OwnerGuardService',
+          useValue: { findOne: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -57,7 +61,9 @@ describe('PollsController', () => {
       const id = 1;
       await controller.findOne(id);
 
-      expect(pollsService.findOneWithUserParticipation).toHaveBeenCalledWith({ where: { id } });
+      expect(pollsService.findOneWithUserParticipation).toHaveBeenCalledWith({
+        where: { id },
+      });
     });
   });
 

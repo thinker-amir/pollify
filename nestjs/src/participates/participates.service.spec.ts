@@ -6,7 +6,7 @@ import { PollOption } from 'src/polls/entities/poll-option.entity';
 import { Poll } from 'src/polls/entities/poll.entity';
 import { User } from 'src/users/entities/user.entity';
 import { MockRepository } from 'test/helper/type/mockRepository.type';
-import { mockRepository } from '../common/utils/test/repository.mock';
+import { mockRepository } from '../../test/helper/repository.mock';
 import { PollOptionsService } from '../polls/poll-options.service';
 import { CreateParticipateDto } from './dto/create-participate.dto';
 import { UpdateParticipateDto } from './dto/update-participate.dto';
@@ -140,7 +140,6 @@ describe('ParticipateService', () => {
     };
     it('should update a participate if exist', async () => {
       service.findOne = jest.fn().mockResolvedValue(mockParticipate);
-      service['checkAuthorization'] = jest.fn();
       jest
         .spyOn(pollOptionsService, 'findOne')
         .mockResolvedValue(mockPollOption);
@@ -153,9 +152,6 @@ describe('ParticipateService', () => {
       const result = await service.update(id, updateParticipateDto);
 
       expect(service.findOne).toHaveBeenCalledWith({ where: { id } });
-      expect(service['checkAuthorization']).toHaveBeenCalledWith(
-        mockParticipate,
-      );
       expect(pollOptionsService.findOne).toHaveBeenCalledWith({
         where: { id: updateParticipateDto.pollOption },
       });
@@ -182,7 +178,6 @@ describe('ParticipateService', () => {
       const id = 1;
 
       jest.spyOn(service, 'findOne').mockResolvedValue(mockParticipate);
-      service['checkAuthorization'] = jest.fn();
       jest
         .spyOn(participateRepository, 'remove')
         .mockResolvedValue(mockParticipate);
@@ -190,9 +185,6 @@ describe('ParticipateService', () => {
       const result = await service.remove(id);
 
       expect(service.findOne).toHaveBeenCalledWith({ where: { id } });
-      expect(service['checkAuthorization']).toHaveBeenCalledWith(
-        mockParticipate,
-      );
       expect(participateRepository.remove).toHaveBeenCalledWith(
         mockParticipate,
       );

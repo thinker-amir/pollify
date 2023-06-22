@@ -7,15 +7,18 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
+  ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { OwnerGuard } from '../common/guard/owner.guard';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
 import { UpdatePolicyInterceptor } from './interceptor/update.policy.interceptor';
@@ -47,6 +50,8 @@ export class PollsController {
 
   @ApiNotFoundResponse({ description: 'Not found!' })
   @Patch(':id')
+  @UseGuards(OwnerGuard)
+  @ApiForbiddenResponse({ description: 'Forbidden Response' })
   @UseInterceptors(UpdatePolicyInterceptor)
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -56,6 +61,8 @@ export class PollsController {
   }
 
   @ApiNotFoundResponse({ description: 'Not found!' })
+  @UseGuards(OwnerGuard)
+  @ApiForbiddenResponse({ description: 'Forbidden Response' })
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.pollsService.remove(id);

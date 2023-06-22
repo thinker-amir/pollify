@@ -25,9 +25,11 @@ export class Poll {
   @Column({ type: 'timestamp' })
   expireDate: Date;
 
+  @Column({ nullable: true })
+  cover: string;
+
   @OneToMany(() => PollOption, (pollOption) => pollOption.poll, {
     cascade: true,
-    eager: true,
   })
   options: PollOption[];
 

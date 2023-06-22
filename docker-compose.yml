@@ -10,6 +10,8 @@ services:
     environment:
       POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
       TZ: '${TIME_ZONE}'
+    volumes:
+      - volume-postgres:/var/lib/postgresql/data
     restart: always
 
   test-postgres:
@@ -20,6 +22,15 @@ services:
     environment:
       POSTGRES_PASSWORD: "${TEST_DATABASE_PASSWORD}"
       TZ: '${TIME_ZONE}'
+    restart: always
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME-localstack}"
+    image: localstack/localstack
+    ports:
+      - 4566:4566
+    environment:
+      - SERVICES=s3
     restart: always
 
   nestjs:
@@ -41,4 +52,9 @@ services:
       - '3000:3000'
     depends_on:
       - postgres
+      - localstack
     restart: always
+
+volumes:
+  volume-postgres:
+    driver: local

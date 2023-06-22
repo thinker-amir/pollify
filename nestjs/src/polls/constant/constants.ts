@@ -1,0 +1,1 @@
+export const S3_BUCKET_NAME = 'pollify-poll-cover';
