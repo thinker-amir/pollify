@@ -12,6 +12,8 @@ import { ClsModule } from 'nestjs-cls';
 import { ParticipatesModule } from './participates/participates.module';
 import { RealTimeModule } from './real-time/real-time.module';
 import { S3Module } from './aws/s3/s3.module';
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -31,6 +33,7 @@ import { S3Module } from './aws/s3/s3.module';
         mount: true,
       },
     }),
+    CacheModule.register(),
     AuthModule,
     UsersModule,
     PollsModule,
@@ -39,6 +42,12 @@ import { S3Module } from './aws/s3/s3.module';
     S3Module,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
+  ],
 })
 export class AppModule {}
