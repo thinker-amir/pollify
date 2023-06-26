@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -16,13 +17,18 @@ async function bootstrap() {
     }),
   );
 
-  // allows setting the container to be used by the class-validor library
+  // Link DI container to class-validator
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
+  // Use Helmet middleware for setting HTTP headers to secure Express app
+  app.use(helmet());
+
+  // Use global interceptor for class serialization, which helps to manage the data sent in responses
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get('Reflector')),
   );
 
+  // Configure Swagger for API documentation
   const config = new DocumentBuilder()
     .setTitle('Pollify')
     .setDescription('The Pollify API description')
