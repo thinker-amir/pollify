@@ -24,6 +24,13 @@ services:
       TZ: '${TIME_ZONE}'
     restart: always
 
+  redis:
+    image: redis
+    container_name: redis
+    volumes:
+      - volume-cache:/data
+    restart: always
+
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack}"
     image: localstack/localstack
@@ -57,4 +64,6 @@ services:
 
 volumes:
   volume-postgres:
+    driver: local
+  volume-cache:
     driver: local

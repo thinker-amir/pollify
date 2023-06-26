@@ -36,6 +36,10 @@ This project utilizes various technologies and frameworks. Here are the key tech
     <td>TypeORM</td>
     <td>An Object-Relational Mapping (ORM) library for TypeScript and JavaScript that simplifies database integration.</td>
   </tr>
+  <tr> 
+    <td>Redis</td> 
+    <td>An open-source in-memory data structure store, used as a database, cache, and message broker.</td> 
+  </tr> 
   <tr>
     <td>Localstack</td>
     <td>A fully functional local AWS cloud stack that enables local development and testing.</td>

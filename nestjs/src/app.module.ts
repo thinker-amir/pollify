@@ -14,6 +14,7 @@ import { RealTimeModule } from './real-time/real-time.module';
 import { S3Module } from './aws/s3/s3.module';
 import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -33,7 +34,12 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
         mount: true,
       },
     }),
-    CacheModule.register(),
+    CacheModule.register({
+      store: redisStore,
+      host: 'redis',
+      port: 6379,
+      ttl: 5,
+    }),
     AuthModule,
     UsersModule,
     PollsModule,
