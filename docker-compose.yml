@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: "${DATABASE_PASSWORD}"
       TZ: '${TIME_ZONE}'
     volumes:
-      - volume-postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     restart: always
 
   test-postgres:
@@ -24,11 +24,18 @@ services:
       TZ: '${TIME_ZONE}'
     restart: always
 
-  redis:
+  redis-cache:
     image: redis
-    container_name: redis
+    container_name: redis-cache
     volumes:
-      - volume-cache:/data
+      - redis_cache_data:/data
+    restart: always
+
+  redis-throttle:
+    image: redis
+    container_name: redis-throttler
+    volumes:
+      - redis_throttler_data:/data
     restart: always
 
   localstack:
@@ -63,7 +70,9 @@ services:
     restart: always
 
 volumes:
-  volume-postgres:
+  postgres_data:
     driver: local
-  volume-cache:
+  redis_cache_data:
+    driver: local
+  redis_throttler_data:
     driver: local
