@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { ResponseInterceptor } from './common/interceptor/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,7 @@ async function bootstrap() {
   // Use global interceptor for class serialization, which helps to manage the data sent in responses
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get('Reflector')),
+    new ResponseInterceptor(),
   );
 
   // Configure Swagger for API documentation

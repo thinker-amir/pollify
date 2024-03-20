@@ -1,17 +1,18 @@
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { mockRepository } from '../../test/helper/repository.mock';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
 import { SignupDto } from '../auth/dto/signup.dto';
-import { HashService } from '../common/utils/hash/hash.service';
-import { mockRepository } from '../../test/helper/repository.mock';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
+import { CreateUserCommand } from './cqrs/commands/create-user-command';
 
 describe('UsersService', () => {
   let service: UsersService;
   let userRepository: MockRepository;
-  let hashService: HashService;
+  let commandBus: CommandBus;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,15 +23,15 @@ describe('UsersService', () => {
           useValue: mockRepository(),
         },
         {
-          provide: HashService,
+          provide: CommandBus,
           useValue: {
-            hash: jest.fn(),
+            execute: jest.fn(),
           },
         },
       ],
     }).compile();
 
-    hashService = module.get<HashService>(HashService);
+    commandBus = module.get<CommandBus>(CommandBus);
     userRepository = module.get<MockRepository>(getRepositoryToken(User));
     service = module.get<UsersService>(UsersService);
   });
@@ -74,43 +75,12 @@ describe('UsersService', () => {
       password: 'testpassword',
     };
 
-    it('should call hashService.hash', async () => {
-      await service.create(signupDto as SignupDto);
-
-      expect(hashService.hash).toHaveBeenCalled();
-    });
-
-    it('should call userRepository.create with the correct argument', async () => {
+    it('should execute CreateUserCommand', async () => {
       await service.create(signupDto);
 
-      expect(userRepository.create).toHaveBeenCalledWith(signupDto);
-    });
-
-    it('should call userRepository.save with the correct argument', async () => {
-      userRepository.create.mockReturnValue(signupDto);
-      await service.create(signupDto);
-
-      expect(userRepository.save).toHaveBeenCalledWith(signupDto as User);
-    });
-
-    it('should throw a ConflictException if userRepository.save throws a unique constraint violation error', async () => {
-      const error = { code: '23505', detail: 'Username already exists' };
-      userRepository.save.mockRejectedValue(error);
-
-      await expect(service.create(signupDto)).rejects.toThrow(
-        ConflictException,
+      expect(commandBus.execute).toHaveBeenCalledWith(
+        new CreateUserCommand(signupDto),
       );
-    });
-
-    it('should throw the original error if userRepository.save throws a non-unique constraint violation error', async () => {
-      const error: any = { code: '12345', message: 'Some other error' };
-      userRepository.save.mockRejectedValue(error);
-
-      try {
-        await service.create(signupDto);
-      } catch (err) {
-        expect(err).toEqual(error);
-      }
     });
   });
 });
