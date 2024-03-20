@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { HashService } from '../common/utils/hash/hash.service';
-import { SignupDto } from './dto/signup.dto';
+import { SignupRequestDto } from './dto/requests/signup.request.dto';
 import { ClsService } from 'nestjs-cls';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class AuthService {
     }
   }
 
-  signUp(signupDto: SignupDto) {
+  signUp(signupDto: SignupRequestDto) {
     return this.usersService.create(signupDto);
   }
 

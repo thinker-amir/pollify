@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SignupDto } from '../auth/dto/signup.dto';
+import { SignupRequestDto } from '../auth/dto/requests/signup.request.dto';
 import { CreateUserCommand } from './cqrs/commands/create-user-command';
 import { User } from './entities/user.entity';
 
@@ -22,7 +22,7 @@ export class UsersService {
     return user;
   }
 
-  async create(signupDto: SignupDto) {
+  async create(signupDto: SignupRequestDto) {
     await this.commandBus.execute(new CreateUserCommand(signupDto));
   }
 }

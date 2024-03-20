@@ -1,5 +1,5 @@
-import { SigninDto } from 'src/auth/dto/signin.dto';
+import { SignInRequestDto } from 'src/auth/dto/requests/sign-in.request.dto';
 
 export class CreateUserCommand {
-  constructor(public readonly signupDto: SigninDto) {}
+  constructor(public readonly signupDto: SignInRequestDto) {}
 }
