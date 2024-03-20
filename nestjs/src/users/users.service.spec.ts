@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { mockRepository } from '../../test/helper/repository.mock';
 import { MockRepository } from '../../test/helper/type/mockRepository.type';
-import { SignupDto } from '../auth/dto/signup.dto';
+import { SignupRequestDto } from '../auth/dto/requests/signup.request.dto';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { CreateUserCommand } from './cqrs/commands/create-user-command';
@@ -67,7 +67,7 @@ describe('UsersService', () => {
   });
 
   describe('create', () => {
-    const signupDto: SignupDto = {
+    const signupDto: SignupRequestDto = {
       name: 'John',
       surname: 'Doe',
       email: 'john.doe@test.com',

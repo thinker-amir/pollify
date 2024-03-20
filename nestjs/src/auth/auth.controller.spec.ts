@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { SignupDto } from './dto/signup.dto';
+import { SignupRequestDto } from './dto/requests/signup.request.dto';
 
 const mockAuthService: Partial<AuthService> = {
   signIn: jest.fn(),
@@ -57,7 +57,7 @@ describe('AuthController', () => {
 
   describe('signup', () => {
     it('should create a new user', async () => {
-      const signupDto: SignupDto = mockUser;
+      const signupDto: SignupRequestDto = mockUser;
 
       await controller.signUp(signupDto);
 
