@@ -33,6 +33,10 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: true,
+  });
+
   // Configure Swagger for API documentation
   const config = new DocumentBuilder()
     .setTitle('Pollify')
