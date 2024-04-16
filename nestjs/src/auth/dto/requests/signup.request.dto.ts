@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsAlpha, IsEmail, IsString, Length, MinLength } from 'class-validator';
+import { IsUnique } from 'src/common/validations/is-unique.validation';
 
 export class SignupRequestDto {
   @ApiProperty({ example: 'John' })
@@ -14,6 +15,7 @@ export class SignupRequestDto {
 
   @ApiProperty({ example: 'eshpitegah' })
   @IsString()
+  @IsUnique({ tableName: 'user', column: 'username' })
   @Length(2, 20)
   username: string;
 
@@ -24,5 +26,6 @@ export class SignupRequestDto {
 
   @ApiProperty({ example: 'john.doe@gmail.com' })
   @IsEmail()
+  @IsUnique({ tableName: 'user', column: 'email' })
   email: string;
 }

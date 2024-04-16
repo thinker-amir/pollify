@@ -17,6 +17,7 @@ import { ParticipatesModule } from './participates/participates.module';
 import { PollsModule } from './polls/polls.module';
 import { RealTimeModule } from './real-time/real-time.module';
 import { UsersModule } from './users/users.module';
+import { IsUniqueValidator } from './common/validations/is-unique.validation';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [
     AppService,
+    IsUniqueValidator,
     {
       provide: APP_INTERCEPTOR,
       useClass: CacheInterceptor,
