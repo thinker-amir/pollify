@@ -11,7 +11,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { IsDateGreaterThanNow } from '../../common/decorator/validation/is-date-greater-than-now.decorator';
+import { IsDateGreaterThanNow } from '../../common/validations/is-date-greater-than-now.validation';
 
 export class CreatePollDto {
   @ApiProperty({ example: 'Which Stack do you love more?' })
