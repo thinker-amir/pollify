@@ -1,5 +1,5 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { NestFactory, Reflector } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import helmet from 'helmet';
@@ -25,13 +25,7 @@ async function bootstrap() {
   app.use(helmet());
 
   // Use global interceptor for class serialization, which helps to manage the data sent in responses
-  app.useGlobalInterceptors(
-    new ResponseInterceptor(),
-    new ClassSerializerInterceptor(app.get(Reflector), {
-      strategy: 'excludeAll',
-      excludeExtraneousValues: true,
-    }),
-  );
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   app.enableCors({
     origin: true,
